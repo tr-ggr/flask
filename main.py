@@ -3,8 +3,9 @@ from flask import *
 from werkzeug.utils import secure_filename
 import model 
 import sys
+import io
 
-UPLOAD_FOLDER = 'D:\Temp\Downloads\Test'
+UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
@@ -34,10 +35,16 @@ def upload_file():
         if file and allowed_file(file.filename):
             # filename = secure_filename(file.filename)
             # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            print(model.check(file), file=sys.stderr)
-            return render_template('main.html')
+            # Read the contents of the file into a BytesIO object
+            file_stream = io.BytesIO()
+            file.save(file_stream)
+            # Seek to the beginning of the stream
+            file_stream.seek(0)
+
+            result = model.check(file_stream)
+            return render_template('main.html', result=result)
         
     return render_template('main.html')
  
 if __name__ == '__main__':  
-   app.run()
+   app.run(debug=True)
