@@ -1,7 +1,7 @@
 import os
 from flask import *
 from werkzeug.utils import secure_filename
-import model 
+import classify 
 import sys
 import io
 
@@ -41,7 +41,7 @@ def upload_file():
             # Seek to the beginning of the stream
             file_stream.seek(0)
 
-            result = model.check(file_stream)
+            result = classify.check(file_stream)
             return render_template('main.html', result=result)
         
     return render_template('main.html')
